@@ -11,6 +11,7 @@ import {
   saveUploadedFile,
 } from "@/lib/storage";
 import { uploadDocumentSchema } from "@/lib/validators";
+import { UploadForm } from "@/components/upload-form";
 
 async function uploadDocumentsAction(formData: FormData) {
   "use server";
@@ -93,7 +94,7 @@ export default async function UploadPage() {
         <p className="text-sm text-slate-600">Signed in as {user.email}. Allowed formats: PDF, JPG, PNG. Max 10MB per file.</p>
       </div>
 
-      <form action={uploadDocumentsAction} className="space-y-4 rounded border bg-white p-4">
+      <UploadForm action={uploadDocumentsAction}>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="space-y-1">
             <span className="text-sm">Company</span>
@@ -120,10 +121,6 @@ export default async function UploadPage() {
             <input className="w-full rounded border p-2" name="accountingPeriod" pattern="^\d{4}-(0[1-9]|1[0-2])$" placeholder="2026-05" required />
           </label>
 
-          <label className="space-y-1">
-            <span className="text-sm">Files</span>
-            <input className="w-full rounded border p-2" name="files" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" multiple required />
-          </label>
         </div>
 
         <label className="block space-y-1">
@@ -131,8 +128,7 @@ export default async function UploadPage() {
           <textarea className="w-full rounded border p-2" name="notes" rows={3} />
         </label>
 
-        <button className="rounded border bg-slate-900 px-4 py-2 text-white" type="submit">Upload</button>
-      </form>
+              </UploadForm>
     </div>
   );
 }

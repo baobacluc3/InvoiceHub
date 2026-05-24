@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
+import { StatusBadge } from "@/components/status-badge";
 
 export default async function DocumentsPage() {
   const user = await requireAuth();
@@ -28,12 +29,14 @@ export default async function DocumentsPage() {
             </tr>
           </thead>
           <tbody>
-            {documents.map((document) => (
+            {documents.length === 0 ? (
+              <tr><td className="py-8 text-center text-slate-500" colSpan={5}>No documents uploaded yet.</td></tr>
+            ) : documents.map((document) => (
               <tr className="border-b" key={document.id}>
                 <td className="py-2">{document.fileName}</td>
                 <td className="py-2">{document.company.name}</td>
                 <td className="py-2">{document.documentType.name}</td>
-                <td className="py-2">{document.status}</td>
+                <td className="py-2"><StatusBadge status={document.status} /></td>
                 <td className="py-2">
                   <Link className="rounded border px-2 py-1" href={`/documents/${document.id}`}>
                     View details
