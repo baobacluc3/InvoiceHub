@@ -39,11 +39,33 @@ async function updateStatusAction(formData: FormData) {"use server";
   revalidatePath("/admin/users");
 }
 
+
+async function resetUserAccessAction(formData: FormData) {"use server";
+  const actor = await requireRole([UserRole.ADMIN]);
+  const id = formData.get("id");
+  if (typeof id !== "string" || !id) return;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.session.deleteMany({ where: { userId: id } });
+    await tx.account.deleteMany({ where: { userId: id } });
+  });
+
+  await logActivity({
+    userId: actor.id,
+    action: "USER_ACCESS_RESET",
+    entityType: "USER",
+    entityId: id,
+    metadata: { reset: "sessions-and-linked-google-account" },
+  });
+
+  revalidatePath("/admin/users");
+}
+
 export default async function AdminUsersPage() {
   await requireRole([UserRole.ADMIN]);
   const users = await prisma.user.findMany({ orderBy: { createdAt: "desc" } });
 
-  return <section className="space-y-6"><h2 className="text-2xl font-semibold">Admin User Management</h2><p className="text-sm text-slate-600">Google SSO users must reset password through Google.</p>
+  return <section className="space-y-6"><h2 className="text-2xl font-semibold">Admin User Management</h2><p className="text-sm text-slate-600">For Google SSO users, “Reset access” will sign out all sessions and require re-linking Google on next login.</p>
     <form action={createUserAction} className="grid grid-cols-5 gap-2 rounded border bg-white p-4">
       <input name="name" placeholder="Name" className="rounded border px-2 py-1" required />
       <input name="email" type="email" placeholder="Email" className="rounded border px-2 py-1" required />
@@ -56,6 +78,7 @@ export default async function AdminUsersPage() {
         <form action={updateRoleAction} className="flex gap-2"><input type="hidden" name="id" value={u.id}/><select name="role" defaultValue={u.role} className="rounded border px-2 py-1">{Object.values(UserRole).map((r)=><option key={r}>{r}</option>)}</select><button className="rounded border px-2" type="submit">Change role</button></form>
         <form action={updateStatusAction} className="flex gap-2"><input type="hidden" name="id" value={u.id}/><input type="hidden" name="status" value={u.status===UserStatus.ACTIVE?UserStatus.DISABLED:UserStatus.ACTIVE}/><button className="rounded border px-2" type="submit">{u.status===UserStatus.ACTIVE?"Disable":"Enable"}</button></form>
         <form action={updateUserAction} className="grid grid-cols-4 gap-2"><input type="hidden" name="id" value={u.id}/><input name="name" defaultValue={u.name ?? ""} className="rounded border px-2 py-1" required/><input name="email" defaultValue={u.email} type="email" className="rounded border px-2 py-1" required/><select name="role" defaultValue={u.role} className="rounded border px-2 py-1">{Object.values(UserRole).map((r)=><option key={r}>{r}</option>)}</select><select name="status" defaultValue={u.status} className="rounded border px-2 py-1">{Object.values(UserStatus).map((s)=><option key={s}>{s}</option>)}</select><button type="submit" className="rounded border px-2">Update info</button></form>
+        <form action={resetUserAccessAction} className="flex gap-2"><input type="hidden" name="id" value={u.id}/><button className="rounded border px-2" type="submit">Reset access</button></form>
       </td></tr>)}</tbody></table>
   </section>;
 }
