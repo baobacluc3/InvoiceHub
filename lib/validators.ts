@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from "@prisma/client";
+import { ExportFormat, UserRole, UserStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const accountingPeriodSchema = z
@@ -87,4 +87,27 @@ export const rejectDocumentSchema = z.object({
     .trim()
     .min(3, "Rejection reason must be at least 3 characters")
     .max(500, "Rejection reason must be 500 characters or fewer"),
+});
+
+export const exportFiltersSchema = z.object({
+  companyId: z.string().cuid().optional(),
+  accountingPeriod: accountingPeriodSchema.optional(),
+  documentTypeId: z.string().cuid().optional(),
+  dateFrom: z.string().date().optional(),
+  dateTo: z.string().date().optional(),
+  format: z.nativeEnum(ExportFormat).default(ExportFormat.CSV),
+});
+
+export const exportOcrFieldsSchema = z.object({
+  invoiceNumber: z.string().optional(),
+  invoiceSymbol: z.string().optional(),
+  invoiceDate: z.string().optional(),
+  sellerName: z.string().optional(),
+  sellerTaxCode: z.string().optional(),
+  buyerName: z.string().optional(),
+  buyerTaxCode: z.string().optional(),
+  subtotal: z.string().optional(),
+  vatAmount: z.string().optional(),
+  totalAmount: z.string().optional(),
+  currency: z.string().optional(),
 });
