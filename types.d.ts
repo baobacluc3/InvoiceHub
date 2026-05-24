@@ -13,3 +13,11 @@ declare module "next-auth" {
     };
   }
 }
+
+
+declare module "next-auth" {
+  interface User {
+    role: UserRole;
+    status: UserStatus;
+  }
+}

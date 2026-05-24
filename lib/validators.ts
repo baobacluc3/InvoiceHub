@@ -80,3 +80,11 @@ export const updateOcrResultSchema = z.object({
   fields: ocrFieldsSchema,
   lineItems: z.array(ocrLineItemSchema),
 });
+
+export const rejectDocumentSchema = z.object({
+  note: z
+    .string()
+    .trim()
+    .min(3, "Rejection reason must be at least 3 characters")
+    .max(500, "Rejection reason must be 500 characters or fewer"),
+});

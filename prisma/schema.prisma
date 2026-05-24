@@ -36,6 +36,13 @@ enum ExportFormat {
   EXCEL
 }
 
+enum ReviewAction {
+  SUBMITTED
+  APPROVED
+  REJECTED
+  REOPENED
+}
+
 model User {
   id            String        @id @default(cuid())
   name          String?
@@ -50,6 +57,7 @@ model User {
   ocrResults    OcrResult[]
   activityLogs  ActivityLog[]
   exportJobs    ExportJob[]
+  reviewLogs    ReviewLog[]
   accounts      Account[]
   sessions      Session[]
 }
@@ -101,9 +109,24 @@ model Document {
   documentType       DocumentType   @relation(fields: [documentTypeId], references: [id])
   uploadedBy         User           @relation(fields: [uploadedById], references: [id])
   ocrResults         OcrResult[]
+  reviewLogs         ReviewLog[]
 
   @@index([companyId, accountingPeriod])
   @@index([status])
+}
+
+model ReviewLog {
+  id          String       @id @default(cuid())
+  documentId  String
+  reviewerId  String
+  action      ReviewAction
+  note        String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  document    Document     @relation(fields: [documentId], references: [id])
+  reviewer    User         @relation(fields: [reviewerId], references: [id])
+
+  @@index([documentId, createdAt])
 }
 
 model OcrResult {
