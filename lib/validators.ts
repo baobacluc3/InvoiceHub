@@ -89,25 +89,22 @@ export const rejectDocumentSchema = z.object({
     .max(500, "Rejection reason must be 500 characters or fewer"),
 });
 
-export const exportFiltersSchema = z.object({
-  companyId: z.string().cuid().optional(),
+const optionalDateString = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .optional();
+
+export const dashboardFiltersSchema = z.object({
+  from: optionalDateString,
+  to: optionalDateString,
+  company: z.string().cuid().optional(),
   accountingPeriod: accountingPeriodSchema.optional(),
-  documentTypeId: z.string().cuid().optional(),
-  dateFrom: z.string().date().optional(),
-  dateTo: z.string().date().optional(),
-  format: z.nativeEnum(ExportFormat).default(ExportFormat.CSV),
 });
 
-export const exportOcrFieldsSchema = z.object({
-  invoiceNumber: z.string().optional(),
-  invoiceSymbol: z.string().optional(),
-  invoiceDate: z.string().optional(),
-  sellerName: z.string().optional(),
-  sellerTaxCode: z.string().optional(),
-  buyerName: z.string().optional(),
-  buyerTaxCode: z.string().optional(),
-  subtotal: z.string().optional(),
-  vatAmount: z.string().optional(),
-  totalAmount: z.string().optional(),
-  currency: z.string().optional(),
+export const logsFiltersSchema = z.object({
+  user: z.string().cuid().optional(),
+  action: z.string().trim().min(1).max(100).optional(),
+  entityType: z.string().trim().min(1).max(100).optional(),
+  from: optionalDateString,
+  to: optionalDateString,
 });

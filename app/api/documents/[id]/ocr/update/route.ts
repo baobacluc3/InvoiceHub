@@ -11,12 +11,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const user = await prisma.user.findUnique({ where: { email: session.user.email } });
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await request.json();
   const { id } = await params;
+  const body = await request.json();
   const parsed = updateOcrResultSchema.safeParse({ ...body, documentId: id });
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const existing = await prisma.ocrResult.findFirst({ where: { documentId: id }, orderBy: { createdAt: 'desc' } });
+  const existing = await prisma.ocrResult.findFirst({ where: { documentId: id }, orderBy: { createdAt: "desc" } });
   if (!existing) return NextResponse.json({ error: "OCR result not found" }, { status: 404 });
 
   await prisma.$transaction(async (tx) => {
