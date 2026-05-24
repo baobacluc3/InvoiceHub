@@ -16,19 +16,19 @@ async function main() {
 
   await prisma.company.createMany({
     data: [
-      { name: "Acme Holdings", code: "ACME" },
-      { name: "Northwind Services", code: "NORTH" },
-      { name: "Bluewave Consulting", code: "BLUE" },
+      { name: "Acme Holdings", taxCode: "ACME-TAX", address: "100 Main St" },
+      { name: "Northwind Services", taxCode: "NORTH-TAX", address: "200 Pine Ave" },
+      { name: "Bluewave Consulting", taxCode: "BLUE-TAX", address: "300 Oak Blvd" },
     ],
     skipDuplicates: true,
   });
 
   await prisma.documentType.createMany({
     data: [
-      { name: "Invoice", description: "Accounts payable invoices" },
-      { name: "Receipt", description: "Expense receipts" },
-      { name: "Credit Note", description: "Credit adjustments" },
-      { name: "Bank Statement", description: "Monthly bank statements" },
+      { code: "INV", name: "Invoice", description: "Accounts payable invoices" },
+      { code: "RCT", name: "Receipt", description: "Expense receipts" },
+      { code: "CRN", name: "Credit Note", description: "Credit adjustments" },
+      { code: "BNK", name: "Bank Statement", description: "Monthly bank statements" },
     ],
     skipDuplicates: true,
   });
