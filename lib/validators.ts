@@ -88,3 +88,23 @@ export const rejectDocumentSchema = z.object({
     .min(3, "Rejection reason must be at least 3 characters")
     .max(500, "Rejection reason must be 500 characters or fewer"),
 });
+
+const optionalDateString = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .optional();
+
+export const dashboardFiltersSchema = z.object({
+  from: optionalDateString,
+  to: optionalDateString,
+  company: z.string().cuid().optional(),
+  accountingPeriod: accountingPeriodSchema.optional(),
+});
+
+export const logsFiltersSchema = z.object({
+  user: z.string().cuid().optional(),
+  action: z.string().trim().min(1).max(100).optional(),
+  entityType: z.string().trim().min(1).max(100).optional(),
+  from: optionalDateString,
+  to: optionalDateString,
+});
