@@ -56,23 +56,29 @@ model User {
 
 model Company {
   id          String     @id @default(cuid())
-  name        String     @unique
-  code        String     @unique
+  name        String
+  taxCode     String     @unique
+  address     String
   isActive    Boolean    @default(true)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   documents   Document[]
   exportJobs  ExportJob[]
+
+  @@index([name])
 }
 
 model DocumentType {
   id          String     @id @default(cuid())
-  name        String     @unique
+  code        String     @unique
+  name        String
   description String?
   isActive    Boolean    @default(true)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   documents   Document[]
+
+  @@index([name])
 }
 
 model Document {
@@ -80,10 +86,12 @@ model Document {
   companyId          String
   documentTypeId     String
   uploadedById       String
+  originalFileName   String
   fileName           String
   storagePath        String
   mimeType           String
   accountingPeriod   String
+  notes              String?
   status             DocumentStatus @default(UPLOADED)
   approvedAt         DateTime?
   approvedById       String?
@@ -139,16 +147,16 @@ model ActivityLog {
 }
 
 model ExportJob {
-  id          String       @id @default(cuid())
-  companyId   String?
-  requestedById String
-  format      ExportFormat
-  status      String       @default("PENDING")
-  outputPath  String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  company     Company?     @relation(fields: [companyId], references: [id])
-  requestedBy User         @relation(fields: [requestedById], references: [id])
+  id            String       @id @default(cuid())
+  companyId      String?
+  requestedById  String
+  format         ExportFormat
+  status         String       @default("PENDING")
+  outputPath     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  company        Company?     @relation(fields: [companyId], references: [id])
+  requestedBy    User         @relation(fields: [requestedById], references: [id])
 }
 
 model Account {
