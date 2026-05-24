@@ -8,4 +8,5 @@ export const uploadDocumentSchema = z.object({
   companyId: z.string().cuid(),
   documentTypeId: z.string().cuid(),
   accountingPeriod: accountingPeriodSchema,
+  notes: z.string().trim().max(1000).optional(),
 });

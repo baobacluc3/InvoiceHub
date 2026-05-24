@@ -80,10 +80,12 @@ model Document {
   companyId          String
   documentTypeId     String
   uploadedById       String
+  originalFileName   String
   fileName           String
   storagePath        String
   mimeType           String
   accountingPeriod   String
+  notes              String?
   status             DocumentStatus @default(UPLOADED)
   approvedAt         DateTime?
   approvedById       String?
