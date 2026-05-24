@@ -16,23 +16,30 @@ export default async function ProtectedLayout({ children }: { children: React.Re
   const user = await requireAuth();
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between p-4">
-          <div>
-            <h1 className="text-xl font-semibold">InvoiceHub</h1>
-            <p className="text-sm text-slate-600">Signed in as {user.email}</p>
-          </div>
-          <nav className="flex flex-wrap gap-2 text-sm">
+    <div className="min-h-screen bg-slate-100">
+      <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[230px_1fr]">
+        <aside className="border-r border-slate-200 bg-white p-4 lg:p-6">
+          <h1 className="text-xl font-bold text-slate-900">InvoiceHub</h1>
+          <p className="mt-1 text-xs text-slate-500">Accounting Automation</p>
+          <nav className="mt-6 space-y-1">
             {navItems.map(([label, href]) => (
-              <Link className="rounded border px-3 py-1" href={href} key={href}>
+              <Link key={href} href={href} className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900">
                 {label}
               </Link>
             ))}
           </nav>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl p-6">{children}</main>
+        </aside>
+
+        <section className="flex min-w-0 flex-col">
+          <header className="border-b border-slate-200 bg-white px-4 py-4 lg:px-8">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Signed in</p>
+              <p className="text-sm text-slate-700">{user.email}</p>
+            </div>
+          </header>
+          <main className="p-4 lg:p-8">{children}</main>
+        </section>
+      </div>
     </div>
   );
 }
