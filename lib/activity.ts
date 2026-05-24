@@ -6,6 +6,8 @@ type LogActivityParams = {
   action: string;
   entityType: string;
   entityId?: string;
+  ipAddress?: string;
+  userAgent?: string;
   metadata?: Prisma.InputJsonValue;
 };
 
@@ -16,6 +18,8 @@ export async function logActivity(params: LogActivityParams) {
       action: params.action,
       entityType: params.entityType,
       entityId: params.entityId,
+      ipAddress: params.ipAddress,
+      userAgent: params.userAgent,
       metadata: params.metadata,
     },
   });

@@ -162,6 +162,8 @@ model ActivityLog {
   action      String
   entityType  String
   entityId    String?
+  ipAddress   String?
+  userAgent   String?
   metadata    Json?
   createdAt   DateTime @default(now())
   user        User?    @relation(fields: [userId], references: [id])

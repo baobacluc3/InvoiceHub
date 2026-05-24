@@ -4,18 +4,19 @@ import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity";
 import { updateOcrResultSchema } from "@/lib/validators";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const user = await prisma.user.findUnique({ where: { email: session.user.email } });
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { id } = await params;
   const body = await request.json();
-  const parsed = updateOcrResultSchema.safeParse({ ...body, documentId: params.id });
+  const parsed = updateOcrResultSchema.safeParse({ ...body, documentId: id });
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const existing = await prisma.ocrResult.findFirst({ where: { documentId: params.id }, orderBy: { createdAt: 'desc' } });
+  const existing = await prisma.ocrResult.findFirst({ where: { documentId: id }, orderBy: { createdAt: "desc" } });
   if (!existing) return NextResponse.json({ error: "OCR result not found" }, { status: 404 });
 
   await prisma.$transaction(async (tx) => {
@@ -29,6 +30,6 @@ export async function POST(request: Request, { params }: { params: { id: string 
     });
   });
 
-  await logActivity({ userId: user.id, action: "OCR_RESULT_UPDATED", entityType: "Document", entityId: params.id });
+  await logActivity({ userId: user.id, action: "OCR_RESULT_UPDATED", entityType: "Document", entityId: id });
   return NextResponse.json({ success: true });
 }
