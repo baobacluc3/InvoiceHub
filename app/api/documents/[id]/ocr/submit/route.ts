@@ -1,8 +1,8 @@
 import { DocumentStatus } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();

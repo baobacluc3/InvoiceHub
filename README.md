@@ -48,8 +48,14 @@ InvoiceHub is a Next.js foundation branch for an accounting document processing 
 - `AUTH_URL`: Base URL for auth callbacks (e.g. `http://localhost:3000`).
 - `GOOGLE_CLIENT_ID`: Google OAuth client id.
 - `GOOGLE_CLIENT_SECRET`: Google OAuth client secret.
+- `OCR_PROVIDER`: OCR backend selector (`mock`, `openai`, or `google_vision`).
+- `OPENAI_API_KEY`: Required when `OCR_PROVIDER=openai`.
 
 ## Notes
 - Unknown Google users are denied sign-in.
+- OCR providers:
+  - `mock` (default) keeps deterministic sample OCR output for local/dev flows without external APIs.
+  - `openai` sends uploaded image/PDF files to OpenAI Responses API and validates strict JSON output before persisting.
+  - `google_vision` is reserved for future integration and currently returns a clear provider error if selected.
 - Disabled users are denied sign-in and blocked from protected routes.
 - OCR, exports, and full CRUD flows are intentionally out of scope for this branch.

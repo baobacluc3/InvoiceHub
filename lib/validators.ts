@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from "@prisma/client";
+import { ExportFormat, UserRole, UserStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const accountingPeriodSchema = z
