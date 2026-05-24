@@ -108,3 +108,13 @@ export const logsFiltersSchema = z.object({
   from: optionalDateString,
   to: optionalDateString,
 });
+
+export const exportFiltersSchema = z.object({
+  companyId: z.string().cuid().optional(),
+  documentTypeId: z.string().cuid().optional(),
+  accountingPeriod: accountingPeriodSchema.optional(),
+  dateFrom: optionalDateString,
+  dateTo: optionalDateString,
+});
+
+export const exportOcrFieldsSchema = ocrFieldsSchema.partial();
